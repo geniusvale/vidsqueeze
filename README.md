@@ -1,4 +1,4 @@
-# vidsqueeze
+# VidSqueeze
 
 A new Flutter project.
 
