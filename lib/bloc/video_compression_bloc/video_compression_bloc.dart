@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:ffmpeg_kit_flutter_full_gpl/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter_full_gpl/ffmpeg_kit_config.dart';
 import 'package:ffmpeg_kit_flutter_full_gpl/ffmpeg_session.dart';
 import 'package:ffmpeg_kit_flutter_full_gpl/ffprobe_kit.dart';
 import 'package:ffmpeg_kit_flutter_full_gpl/log.dart';
@@ -18,12 +19,63 @@ part 'video_compression_state.dart';
 class VideoCompressionBloc
     extends Bloc<VideoCompressionEvent, VideoCompressionState> {
   VideoCompressionBloc() : super(VideoCompressionInitial()) {
+    on<InitialCompressionEvent>(onInitialCompression);
     on<CompressVideoEvent>(onCompressVideo);
     on<CancelCompressionEvent>(onCancelCompression);
     on<ResetCompressionEvent>(onResetCompression);
+    on<DisposeLogCompressionEvent>(onDisposeLog);
   }
 
+  final ScrollController scrollController = ScrollController();
+
+  List<String> logList = [''];
+  final int maxLogCount = 100;
+
   FFmpegSession? currentSession;
+
+  void scrollToBottom() {
+    if (scrollController.hasClients) {
+      scrollController.animateTo(
+        scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+      // scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    }
+  }
+
+  void onDisposeLog(event, emit) {
+    scrollController.dispose();
+    emit(VideoCompressionInitial());
+  }
+
+  Future<void> onInitialCompression(
+      VideoCompressionEvent event, Emitter emit) async {
+    try {
+      FFmpegKitConfig.enableLogCallback((log) {
+        // Tambahkan log baru ke logList
+        if (log.getMessage().isNotEmpty) {
+          logList.add(log.getMessage());
+        } else {
+          logList.add('');
+        }
+        //NO NEED TO EMIT, ALREADY DONE ON SUPER CONSTRUCTOR
+        //EMIT WILL NOT WORK INSIDE ASYNC TASK
+        // emit(VideoCompressionInitial());
+
+        // Batasi jumlah log, hapus log terlama jika melebihi maxLogCount
+        if (logList.length > maxLogCount) {
+          logList.removeAt(0);
+        }
+
+        // Scroll otomatis ke bawah, secara async
+        // scrollToBottom(); //ALSO WORK WELL
+        Future.microtask(() => scrollToBottom());
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
 
   Future<int?> getVideoDuration(String videoPath) async {
     try {
@@ -49,7 +101,7 @@ class VideoCompressionBloc
     return null;
   }
 
-// Fungsi untuk membuat file output baru jika file dengan nama yang sama sudah ada
+  //Fungsi untuk membuat file output baru jika file dengan nama yang sama sudah ada
   String getUniqueFilePath(String basePath, String extension) {
     String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
     return '$basePath-$timestamp.$extension'; // Menambahkan timestamp pada nama file
@@ -111,12 +163,9 @@ class VideoCompressionBloc
           }
         },
         (Log log) {
-          // print(log.getMessage());
           debugPrint('INI LOG ${log.getMessage()}');
         },
         (Statistics statistics) {
-          // print(statistics);
-          debugPrint('INI STATS $statistics');
           if (statistics == null) {
             return;
           }

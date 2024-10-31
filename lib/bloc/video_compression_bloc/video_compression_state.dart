@@ -7,6 +7,11 @@ class VideoCompressionState {
 }
 
 class VideoCompressionInitial extends VideoCompressionState {
+  // List<String>? logList = [];
+
+  // VideoCompressionInitial({
+  //   this.logList,
+  // });
 }
 
 class VideoCompressionInProgress extends VideoCompressionState {
@@ -29,5 +34,4 @@ class VideoCompressionError extends VideoCompressionState {
     required this.errorMessage,
   });
 }
-
 class VideoCompressionCancelled extends VideoCompressionState {}

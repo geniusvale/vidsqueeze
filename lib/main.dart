@@ -45,39 +45,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<String> logList = [];
-  final int maxLogCount = 100; // Batas jumlah log yang disimpan
-  final ScrollController _scrollController = ScrollController();
-
   @override
   void initState() {
-    FFmpegKitConfig.enableLogCallback((log) {
-      setState(() {
-        // Tambahkan log baru ke logList
-        logList.add(log.getMessage());
-
-        // Batasi jumlah log, hapus log terlama jika melebihi maxLogCount
-        if (logList.length > maxLogCount) {
-          logList.removeAt(0);
-        }
-      });
-
-      // Scroll otomatis ke bawah
-      _scrollToBottom();
-    });
+    context.read<VideoCompressionBloc>().add(InitialCompressionEvent());
     super.initState();
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    context.read<VideoCompressionBloc>().add(DisposeLogCompressionEvent());
     super.dispose();
-  }
-
-  void _scrollToBottom() {
-    if (_scrollController.hasClients) {
-      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-    }
   }
 
   // Future _showProgressDialog(BuildContext context) async {
@@ -112,13 +89,7 @@ class _HomePageState extends State<HomePage> {
         title: const Text('VidSqueeze'),
         actions: [
           IconButton(
-            onPressed: () async {
-              // print("Status Kompresi $isCompressing");
-              // print("videoInput $videoInput");
-              // getVideoDuration(videoInput!.path);
-              // // setState(() {});
-              // await OpenFile.open(testOutput);
-            },
+            onPressed: () async {},
             icon: const Icon(Icons.settings),
           ),
         ],
@@ -316,12 +287,14 @@ class _HomePageState extends State<HomePage> {
                 margin: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                 child: ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
-                  controller: _scrollController,
-                  itemCount: logList.length,
+                  controller:
+                      context.read<VideoCompressionBloc>().scrollController,
+                  itemCount:
+                      context.watch<VideoCompressionBloc>().logList.length,
                   padding: const EdgeInsets.all(16),
                   itemBuilder: (context, index) {
                     return Text(
-                      logList[index],
+                      context.watch<VideoCompressionBloc>().logList[index],
                       textAlign: TextAlign.start,
                     );
                   },

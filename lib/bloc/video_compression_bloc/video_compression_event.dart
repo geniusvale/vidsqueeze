@@ -2,6 +2,8 @@ part of 'video_compression_bloc.dart';
 
 abstract class VideoCompressionEvent {}
 
+class InitialCompressionEvent extends VideoCompressionEvent {}
+
 class CompressVideoEvent extends VideoCompressionEvent {
   String videoInputPath;
   String outputBasePath;
@@ -17,3 +19,7 @@ class CompressVideoEvent extends VideoCompressionEvent {
 class CancelCompressionEvent extends VideoCompressionEvent {}
 
 class ResetCompressionEvent extends VideoCompressionEvent {}
+
+class DisposeLogCompressionEvent extends VideoCompressionEvent {}
+
+
