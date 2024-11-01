@@ -1,6 +1,5 @@
 part of 'video_picker_bloc.dart';
 
-@immutable
 sealed class VideoPickerEvent {}
 
 class PickVideoEvent extends VideoPickerEvent {}

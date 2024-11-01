@@ -107,7 +107,7 @@ class VideoCompressionBloc
 
   void onCancelCompression(event, emit) async {
     if (currentSession != null) {
-      await FFmpegKit.cancel();
+      FFmpegKit.cancel();
       currentSession = null;
     }
     emit(VideoCompressionCancelled());
@@ -139,7 +139,6 @@ class VideoCompressionBloc
               emit(VideoCompressionInitial());
             } else if (ReturnCode.isCancel(returnCode)) {
               File(outputPath).deleteSync();
-              emit(VideoCompressionCancelled());
               emit(VideoCompressionInitial());
             } else {
               // ERROR
