@@ -1,18 +1,8 @@
 part of 'video_compression_bloc.dart';
 
-class VideoCompressionState {
-  // List<String>? logList = [];
-  // int? maxLogCount = 100; // Batas jumlah log yang disimpan
-  // ScrollController? scrollController = ScrollController();
-}
+class VideoCompressionState {}
 
-class VideoCompressionInitial extends VideoCompressionState {
-  // List<String>? logList = [];
-
-  // VideoCompressionInitial({
-  //   this.logList,
-  // });
-}
+class VideoCompressionInitial extends VideoCompressionState {}
 
 class VideoCompressionInProgress extends VideoCompressionState {
   double? progress = 0.0;
@@ -34,4 +24,5 @@ class VideoCompressionError extends VideoCompressionState {
     required this.errorMessage,
   });
 }
+
 class VideoCompressionCancelled extends VideoCompressionState {}

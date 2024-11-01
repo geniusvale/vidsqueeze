@@ -22,7 +22,6 @@ class VideoCompressionBloc
     on<InitialCompressionEvent>(onInitialCompression);
     on<CompressVideoEvent>(onCompressVideo);
     on<CancelCompressionEvent>(onCancelCompression);
-    on<ResetCompressionEvent>(onResetCompression);
     on<DisposeLogCompressionEvent>(onDisposeLog);
   }
 
@@ -40,7 +39,6 @@ class VideoCompressionBloc
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
       );
-      // scrollController.jumpTo(scrollController.position.maxScrollExtent);
     }
   }
 
@@ -107,10 +105,6 @@ class VideoCompressionBloc
     return '$basePath-$timestamp.$extension'; // Menambahkan timestamp pada nama file
   }
 
-  void onResetCompression(event, emit) {
-    emit(VideoCompressionInitial());
-  }
-
   void onCancelCompression(event, emit) async {
     if (currentSession != null) {
       await FFmpegKit.cancel();
@@ -142,22 +136,17 @@ class VideoCompressionBloc
             if (ReturnCode.isSuccess(returnCode)) {
               emit(VideoCompressionSuccess(outputPath: outputPath));
               await OpenFile.open(outputPath);
-              emit(ResetCompressionEvent());
-              // ScaffoldMessenger.of(context).showSnackBar(
-              //   const SnackBar(
-              //     content: Text('Video Saved to storage/emulated/0/Movies'),
-              //   ),
-              // );
+              emit(VideoCompressionInitial());
             } else if (ReturnCode.isCancel(returnCode)) {
               File(outputPath).deleteSync();
-              emit(ResetCompressionEvent());
               emit(VideoCompressionCancelled());
+              emit(VideoCompressionInitial());
             } else {
               // ERROR
-              emit(ResetCompressionEvent());
               emit(VideoCompressionError(errorMessage: 'Compression Failed!'));
+              emit(VideoCompressionInitial());
             }
-            completer.complete(); //UPDATE COMPLETER
+            completer.complete(); //UPDATE COMPLETER, To Stop The Process.
           } catch (e) {
             completer.completeError(e);
           }
@@ -180,7 +169,8 @@ class VideoCompressionBloc
         },
       );
       currentSession = session;
-      await completer.future; //Wait for process to complete.
+      //This will Executed, using Completer for waiting async process to complete, because there's emit inside async process, if not it will error.
+      await completer.future;
     } catch (e) {
       emit(VideoCompressionError(errorMessage: '$e'));
     }

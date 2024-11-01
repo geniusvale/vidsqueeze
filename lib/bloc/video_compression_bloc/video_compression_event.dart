@@ -18,6 +18,4 @@ class CompressVideoEvent extends VideoCompressionEvent {
 
 class CancelCompressionEvent extends VideoCompressionEvent {}
 
-class ResetCompressionEvent extends VideoCompressionEvent {}
-
 class DisposeLogCompressionEvent extends VideoCompressionEvent {}
