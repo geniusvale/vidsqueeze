@@ -2,6 +2,7 @@ import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player/video_player.dart';
+import 'package:vidsqueeze/screens/settings_screen.dart';
 import 'package:vidsqueeze/widgets/widgets.dart';
 
 import '../bloc/video_compression_bloc/video_compression_bloc.dart';
@@ -98,8 +99,15 @@ class _HomeScreenState extends State<HomeScreen> {
             title: const Text('VidSqueeze'),
             actions: [
               IconButton(
-                onPressed: () async {},
-                icon: const Icon(Icons.settings),
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsScreen(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.app_settings_alt_outlined),
               ),
             ],
           ),

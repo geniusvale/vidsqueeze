@@ -4,6 +4,9 @@ import 'package:vidsqueeze/bloc/video_picker_bloc/video_picker_bloc.dart';
 import 'package:vidsqueeze/screens/home_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'bloc/app_settings_bloc/app_settings_bloc.dart';
+
+
 void main() {
   runApp(const MyApp());
 }
@@ -22,6 +25,9 @@ class MyApp extends StatelessWidget {
       ),
       home: MultiBlocProvider(
         providers: [
+          BlocProvider(
+            create: (context) => AppSettingsBloc(),
+          ),
           BlocProvider(
             create: (context) => VideoPickerBloc(),
           ),
