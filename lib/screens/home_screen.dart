@@ -107,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   );
                 },
-                icon: const Icon(Icons.app_settings_alt_outlined),
+                icon: const Icon(Icons.settings_outlined),
               ),
             ],
           ),

@@ -128,7 +128,7 @@ class VideoCompressionBloc
       final completer = Completer<void>();
 
       final session = await FFmpegKit.executeAsync(
-        '-i ${event.videoInputPath} -vcodec libx264 -b:v 2M -c:a aac $outputPath',
+        '-i ${event.videoInputPath} -vcodec libx264 -b:v ${event.selectedBitrateQuality ?? '2M'} -c:a aac ${event.userDefinedPath ?? outputPath}',
         (Session session) async {
           try {
             final returnCode = await session.getReturnCode();

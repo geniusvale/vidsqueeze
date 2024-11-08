@@ -22,9 +22,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       body: Column(
         children: [
-          ListTile(
-            title: const Text('Keep Screen On'),
-            trailing: Switch(value: false, onChanged: (isScreenOn) {}),
+          BlocSelector<AppSettingsBloc, AppSettingsState, bool>(
+            selector: (state) => state.isScreenAlwaysOn,
+            builder: (context, isScreenOn) {
+              return ListTile(
+                title: const Text('Keep Screen On'),
+                trailing: Switch(
+                    value: isScreenOn,
+                    onChanged: (value) {
+                      context
+                          .read<AppSettingsBloc>()
+                          .add(ToggleScreenOn(enable: value));
+                    }),
+              );
+            },
           ),
           BlocSelector<AppSettingsBloc, AppSettingsState, ThemeMode>(
             selector: (state) => state.themeMode,
@@ -60,47 +71,54 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
                 child: const Text('Change')),
           ),
-          ListTile(
-            title: const Text('Compression Quality'),
-            subtitle: const Text('Minimum Recommended (Default)'),
-            trailing: TextButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => SimpleDialog(
-                    title: const Text('Choose Quality',
-                        textAlign: TextAlign.center),
-                    children: [
-                      RadioListTile(
-                        title: const Text('Minimum Recommended 2M (Default)'),
-                        value: false,
-                        groupValue: false,
-                        onChanged: (isChoosed) {},
+          BlocBuilder<AppSettingsBloc, AppSettingsState>(
+            builder: (blocBuilderContext, state) {
+              // debugPrint(
+              //     context.read<AppSettingsBloc>().state.definedBitrateQuality);
+              // debugPrint(state.definedQualityTitle);
+              return ListTile(
+                title: const Text('Compression Quality'),
+                subtitle: Text(
+                  state.definedQualityTitle,
+                ),
+                trailing: TextButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (dialogContext) => SimpleDialog(
+                        title: const Text(
+                          'Choose Quality',
+                          textAlign: TextAlign.center,
+                        ),
+                        children: context
+                            .read<AppSettingsBloc>()
+                            .presetQuality
+                            .map(
+                              (e) => RadioListTile(
+                                title: Text(e['title']),
+                                value: e['bitrate'],
+                                groupValue: state.definedBitrateQuality,
+                                onChanged: (value) {
+                                  blocBuilderContext
+                                      .read<AppSettingsBloc>()
+                                      .add(
+                                        ChangeCompressionQuality(
+                                          title: e['title'],
+                                          bitrate: value.toString(),
+                                        ),
+                                      );
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            )
+                            .toList(),
                       ),
-                      RadioListTile(
-                        title: const Text('Medium 4M'),
-                        value: false,
-                        groupValue: false,
-                        onChanged: (isChoosed) {},
-                      ),
-                      RadioListTile(
-                        title: const Text('High 6M'),
-                        value: false,
-                        groupValue: false,
-                        onChanged: (isChoosed) {},
-                      ),
-                      RadioListTile(
-                        title: const Text('Ultra 8M'),
-                        value: false,
-                        groupValue: false,
-                        onChanged: (isChoosed) {},
-                      ),
-                    ],
-                  ),
-                );
-              },
-              child: const Text('Change'),
-            ),
+                    );
+                  },
+                  child: const Text('Change'),
+                ),
+              );
+            },
           ),
         ],
       ),
