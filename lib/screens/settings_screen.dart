@@ -2,6 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../bloc/app_settings_bloc/app_settings_bloc.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -23,13 +26,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: const Text('Keep Screen On'),
             trailing: Switch(value: false, onChanged: (isScreenOn) {}),
           ),
-          ListTile(
-            title: const Text('Dark Theme'),
-            trailing: Switch(value: false, onChanged: (isDarkMode) {}),
+          BlocSelector<AppSettingsBloc, AppSettingsState, ThemeMode>(
+            selector: (state) => state.themeMode,
+            builder: (context, mode) {
+              return ListTile(
+                title: const Text('Dark Theme'),
+                trailing: Switch(
+                  value: mode.name == 'dark' ? true : false,
+                  onChanged: (isDarkMode) {
+                    final newThemeMode =
+                        isDarkMode ? ThemeMode.dark : ThemeMode.light;
+                    context
+                        .read<AppSettingsBloc>()
+                        .add(ToggleDarkMode(themeData: newThemeMode));
+                  },
+                ),
+              );
+            },
           ),
           ListTile(
             title: const Text('Save Directory'),
-            subtitle: const Text('/storage/emulated/0/Movies'),
+            subtitle:
+                Text(context.watch<AppSettingsBloc>().state.definedOutputPath),
             trailing: TextButton(
                 onPressed: () async {
                   await FilesystemPicker.open(

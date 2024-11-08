@@ -6,9 +6,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'bloc/app_settings_bloc/app_settings_bloc.dart';
 
-
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => AppSettingsBloc(),
+        ),
+        BlocProvider(
+          create: (context) => VideoPickerBloc(),
+        ),
+        BlocProvider(
+          create: (context) => VideoCompressionBloc(),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -23,20 +37,12 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => AppSettingsBloc(),
-          ),
-          BlocProvider(
-            create: (context) => VideoPickerBloc(),
-          ),
-          BlocProvider(
-            create: (context) => VideoCompressionBloc(),
-          ),
-        ],
-        child: const HomeScreen(),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.dark,
       ),
+      themeMode: context.watch<AppSettingsBloc>().state.themeMode,
+      home: const HomeScreen(),
     );
   }
 }
