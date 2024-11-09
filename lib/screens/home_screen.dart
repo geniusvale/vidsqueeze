@@ -1,6 +1,10 @@
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_dialogs/material_dialogs.dart';
+import 'package:material_dialogs/widgets/buttons/icon_button.dart';
+import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
+import 'package:open_file_plus/open_file_plus.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:video_player/video_player.dart';
 import 'package:vidsqueeze/bloc/app_settings_bloc/app_settings_bloc.dart';
 import 'package:vidsqueeze/screens/settings_screen.dart';
@@ -61,38 +65,51 @@ class _HomeScreenState extends State<HomeScreen> {
         if (state is VideoCompressionSuccess) {
           final String currentOutputPath =
               context.read<AppSettingsBloc>().state.definedOutputPath;
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            behavior: SnackBarBehavior.floating,
-            content: AwesomeSnackbarContent(
-              title: 'Success!',
-              message: 'Video saved to $currentOutputPath folder!',
-              contentType: ContentType.success,
-            ),
-          ));
+          Dialogs.materialDialog(
+            msg: 'Video saved to $currentOutputPath folder!',
+            title: "Success",
+            color: Colors.white,
+            context: context,
+            actions: [
+              TextButton.icon(
+                  onPressed: () async {
+                    final result = await Share.shareXFiles(
+                      [XFile(state.outputPath!)],
+                    );
+                    if (result.status == ShareResultStatus.success) {
+                      print('Thank you for sharing the video!');
+                    }
+                  },
+                  icon: const Icon(Icons.share_outlined),
+                  label: const Text('Share')),
+              TextButton(
+                  onPressed: () async {
+                    debugPrint('INI OUTPUT PATH ${state.outputPath}');
+                    await OpenFile.open(state.outputPath);
+                  },
+                  child: const Text('Open')),
+            ],
+          );
         } else if (state is VideoCompressionCancelled) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            behavior: SnackBarBehavior.floating,
-            content: AwesomeSnackbarContent(
-              title: 'Cancelled!',
-              message: 'Compression has cancelled!',
-              contentType: ContentType.warning,
-            ),
-          ));
+          Dialogs.materialDialog(
+            context: context,
+            title: "Cancelled",
+            msg: 'Compression has cancelled!',
+            color: Colors.yellow,
+            actions: [
+              TextButton(onPressed: () async {}, child: const Text('Close')),
+            ],
+          );
         } else if (state is VideoCompressionError) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            behavior: SnackBarBehavior.floating,
-            content: AwesomeSnackbarContent(
-              title: 'Error!',
-              message: 'Compression has error ${state.errorMessage}!',
-              contentType: ContentType.failure,
-            ),
-          ));
+          Dialogs.materialDialog(
+            context: context,
+            title: "Error!",
+            msg: 'Compression has error ${state.errorMessage}!',
+            color: Colors.red,
+            actions: [
+              TextButton(onPressed: () async {}, child: const Text('Close')),
+            ],
+          );
           debugPrint('ERROR STATE ${state.errorMessage}');
         }
       },

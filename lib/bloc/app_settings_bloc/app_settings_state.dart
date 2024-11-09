@@ -10,7 +10,7 @@ class AppSettingsState {
   AppSettingsState({
     this.themeMode = ThemeMode.system,
     this.isScreenAlwaysOn = false,
-    this.definedOutputPath = 'storage/emulated/0/Movies/vidsqueezeOutput',
+    this.definedOutputPath = 'storage/emulated/0/Movies/',
     this.definedBitrateQuality = '2M',
     this.definedQualityTitle = 'Minimum Recommended (Default)',
   });

@@ -13,7 +13,7 @@ class CompressVideoEvent extends VideoCompressionEvent {
 
   CompressVideoEvent({
     required this.videoInputPath,
-    this.outputBasePath = "storage/emulated/0/Movies/vidSqueezeOutput",
+    this.outputBasePath = "storage/emulated/0/Movies",
     this.userDefinedPath,
     this.selectedBitrateQuality,
     // required this.ffmpegCommand,

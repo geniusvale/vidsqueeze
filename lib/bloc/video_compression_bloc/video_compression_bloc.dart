@@ -124,7 +124,8 @@ class VideoCompressionBloc
         return;
       }
 
-      final outputPath = getUniqueFilePath(event.outputBasePath, 'mp4');
+      final outputPath =
+          getUniqueFilePath('${event.outputBasePath}/vidSqueezeOutput', 'mp4');
       final definedOutputPath = getUniqueFilePath(
           '${event.userDefinedPath!}/vidSqueezeOutput', 'mp4');
       final completer = Completer<void>();
