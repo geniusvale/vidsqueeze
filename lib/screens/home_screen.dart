@@ -2,6 +2,7 @@ import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player/video_player.dart';
+import 'package:vidsqueeze/bloc/app_settings_bloc/app_settings_bloc.dart';
 import 'package:vidsqueeze/screens/settings_screen.dart';
 import 'package:vidsqueeze/widgets/widgets.dart';
 
@@ -202,8 +203,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                               .read<VideoCompressionBloc>()
                                               .add(
                                                 CompressVideoEvent(
-                                                  videoInputPath: videoInput!,
-                                                ),
+                                                    videoInputPath: videoInput!,
+                                                    selectedBitrateQuality: context
+                                                        .read<AppSettingsBloc>()
+                                                        .state
+                                                        .definedBitrateQuality,
+                                                    userDefinedPath: context
+                                                        .read<AppSettingsBloc>()
+                                                        .state
+                                                        .definedOutputPath),
                                               ),
                                   child: const Text('Compress Video'),
                                 ),
@@ -305,7 +313,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 200,
                     margin: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                     child: ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
+                      physics: const RangeMaintainingScrollPhysics(),
                       controller:
                           context.read<VideoCompressionBloc>().scrollController,
                       itemCount:
@@ -314,7 +322,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemBuilder: (context, index) {
                         return Text(
                           context.watch<VideoCompressionBloc>().logList[index],
-                          textAlign: TextAlign.start,
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                            color: context
+                                        .read<AppSettingsBloc>()
+                                        .state
+                                        .themeMode
+                                        .name ==
+                                    'dark'
+                                ? Colors.black
+                                : Colors.white,
+                          ),
                         );
                       },
                     ),
@@ -328,6 +346,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   //Codec, Bitrate,
                   //Predefined Presets Quality
                   //Keep Screen On
+                  //Keep App Settings Value to Local Storage
                 ],
               ),
             ),

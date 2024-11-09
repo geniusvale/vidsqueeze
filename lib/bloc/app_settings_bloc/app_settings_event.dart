@@ -27,3 +27,11 @@ class ToggleScreenOn extends AppSettingsEvent {
     this.enable = false,
   });
 }
+
+class UpdateOutputPath extends AppSettingsEvent {
+  String? path;
+
+  UpdateOutputPath({
+    this.path,
+  });
+}

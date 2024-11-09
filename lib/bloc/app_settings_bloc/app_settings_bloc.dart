@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 part 'app_settings_event.dart';
 part 'app_settings_state.dart';
@@ -10,9 +9,10 @@ class AppSettingsBloc extends Bloc<AppSettingsEvent, AppSettingsState> {
     on<ToggleDarkMode>(toggleDarkMode);
     on<ChangeCompressionQuality>(updateCompressionQuality);
     on<ToggleScreenOn>(turnScreenOn);
+    on<UpdateOutputPath>(changeOutputPath);
   }
 
-  List presetQuality = [
+  final List presetQuality = [
     {'title': 'Minimum Recommended (Default)', 'bitrate': '2M'},
     {'title': 'Medium', 'bitrate': '4M'},
     {'title': 'High', 'bitrate': '6M'},
@@ -32,5 +32,9 @@ class AppSettingsBloc extends Bloc<AppSettingsEvent, AppSettingsState> {
 
   void turnScreenOn(ToggleScreenOn event, emit) {
     emit(state.copyWith(isScreenAlwaysOn: event.enable));
+  }
+
+  void changeOutputPath(UpdateOutputPath event, emit) {
+    emit(state.copyWith(definedOutputPath: event.path));
   }
 }

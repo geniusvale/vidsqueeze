@@ -18,17 +18,6 @@ class CompressVideoEvent extends VideoCompressionEvent {
     this.selectedBitrateQuality,
     // required this.ffmpegCommand,
   });
-
-  // CompressVideoEvent copyWith({
-  //   ThemeMode? themeMode,
-  //   bool? isScreenAlwaysOn,
-  //   String? definedOutputPath,
-  // }) {
-  //   return CompressVideoEvent(
-
-  //     // Salin properti lain jika ada
-  //   );
-  // }
 }
 
 class CancelCompressionEvent extends VideoCompressionEvent {}

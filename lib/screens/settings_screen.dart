@@ -28,12 +28,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
               return ListTile(
                 title: const Text('Keep Screen On'),
                 trailing: Switch(
-                    value: isScreenOn,
-                    onChanged: (value) {
-                      context
-                          .read<AppSettingsBloc>()
-                          .add(ToggleScreenOn(enable: value));
-                    }),
+                  value: isScreenOn,
+                  onChanged: (value) {
+                    context
+                        .read<AppSettingsBloc>()
+                        .add(ToggleScreenOn(enable: value));
+                  },
+                ),
               );
             },
           ),
@@ -60,22 +61,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
             subtitle:
                 Text(context.watch<AppSettingsBloc>().state.definedOutputPath),
             trailing: TextButton(
-                onPressed: () async {
-                  await FilesystemPicker.open(
-                    context: context,
-                    title: 'Save to folder',
-                    rootDirectory: Directory('storage/emulated/0/'),
-                    fsType: FilesystemType.folder,
-                    pickText: 'Save file to this folder',
-                  );
-                },
-                child: const Text('Change')),
+              onPressed: () async {
+                final String? selectedPath = await FilesystemPicker.open(
+                  context: context,
+                  title: 'Save to folder',
+                  rootDirectory: Directory('storage/emulated/0/'),
+                  fsType: FilesystemType.folder,
+                  pickText: 'Save file to this folder',
+                );
+                context
+                    .read<AppSettingsBloc>()
+                    .add(UpdateOutputPath(path: selectedPath));
+              },
+              child: const Text('Change'),
+            ),
           ),
           BlocBuilder<AppSettingsBloc, AppSettingsState>(
             builder: (blocBuilderContext, state) {
-              // debugPrint(
-              //     context.read<AppSettingsBloc>().state.definedBitrateQuality);
-              // debugPrint(state.definedQualityTitle);
               return ListTile(
                 title: const Text('Compression Quality'),
                 subtitle: Text(

@@ -168,7 +168,8 @@ class VideoCompressionBloc
         },
       );
       currentSession = session;
-      //This will Executed, using Completer for waiting async process to complete, because there's emit inside async process, if not it will error.
+      //This will Executed, using Completer for waiting async process to complete,
+      //because there's emit inside async process, if not it will error.
       await completer.future;
     } catch (e) {
       emit(VideoCompressionError(errorMessage: '$e'));

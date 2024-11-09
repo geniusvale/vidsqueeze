@@ -40,6 +40,7 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
+        textTheme: Typography.whiteCupertino,
       ),
       themeMode: context.watch<AppSettingsBloc>().state.themeMode,
       home: const HomeScreen(),
