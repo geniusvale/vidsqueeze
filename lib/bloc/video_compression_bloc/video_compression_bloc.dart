@@ -125,10 +125,12 @@ class VideoCompressionBloc
       }
 
       final outputPath = getUniqueFilePath(event.outputBasePath, 'mp4');
+      final definedOutputPath = getUniqueFilePath(
+          '${event.userDefinedPath!}/vidSqueezeOutput', 'mp4');
       final completer = Completer<void>();
 
       final session = await FFmpegKit.executeAsync(
-        '-i ${event.videoInputPath} -vcodec libx264 -b:v ${event.selectedBitrateQuality ?? '2M'} -c:a aac ${event.userDefinedPath ?? outputPath}',
+        '-i ${event.videoInputPath} -vcodec libx264 -b:v ${event.selectedBitrateQuality ?? '2M'} -c:a aac ${definedOutputPath ?? outputPath}',
         (Session session) async {
           try {
             final returnCode = await session.getReturnCode();

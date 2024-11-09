@@ -59,13 +59,15 @@ class _HomeScreenState extends State<HomeScreen> {
     return BlocConsumer<VideoCompressionBloc, VideoCompressionState>(
       listener: (context, state) {
         if (state is VideoCompressionSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          final String currentOutputPath =
+              context.read<AppSettingsBloc>().state.definedOutputPath;
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             elevation: 0,
             backgroundColor: Colors.transparent,
             behavior: SnackBarBehavior.floating,
             content: AwesomeSnackbarContent(
               title: 'Success!',
-              message: 'Video saved to storage/emulated/0/Movies folder!',
+              message: 'Video saved to $currentOutputPath folder!',
               contentType: ContentType.success,
             ),
           ));
@@ -331,7 +333,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         .name ==
                                     'dark'
                                 ? Colors.black
-                                : Colors.white,
+                                : Colors.black,
                           ),
                         );
                       },
@@ -347,6 +349,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   //Predefined Presets Quality
                   //Keep Screen On
                   //Keep App Settings Value to Local Storage
+                  //About Page/Donate
                 ],
               ),
             ),
