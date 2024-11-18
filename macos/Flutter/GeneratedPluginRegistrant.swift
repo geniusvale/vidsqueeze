@@ -5,7 +5,7 @@
 import FlutterMacOS
 import Foundation
 
-import ffmpeg_kit_flutter_full_gpl
+import ffmpeg_kit_flutter_min_gpl
 import package_info_plus
 import path_provider_foundation
 import share_plus
